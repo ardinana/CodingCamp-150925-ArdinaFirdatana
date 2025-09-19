@@ -28,3 +28,10 @@ todoForm.addEventListener("submit", function(e) {
     todoInput.value = "";
     dateInput.value = "";
 });
+
+// hapus task
+todoList.addEventListener("click", function (e) {
+    if(e.target.classList.contains("delete")) {
+        e.target.parentElement.remove();
+    }
+});
