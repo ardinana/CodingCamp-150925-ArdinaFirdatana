@@ -35,3 +35,12 @@ todoList.addEventListener("click", function (e) {
         e.target.parentElement.remove();
     }
 });
+
+// filter task
+filterInput.addEventListener("keyup", function (e) {
+    const text = e.target.value.toLowerCase();
+    document.querySelectorAll("#todo-list li").forEach(function(item) {
+        const content = item.textContent.toLowerCase();
+        item.style.display = content.includes(text) ? "flex" : "none";
+   }); 
+});
