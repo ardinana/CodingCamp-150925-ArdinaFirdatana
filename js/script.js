@@ -2,8 +2,8 @@ const todoBody = document.getElementById("todo-body");
 const todoForm = document.getElementById("todo-form");
 const todoInput = document.getElementById("todo-input");
 const dateInput = document.getElementById("date-input");
-const todoList = document.getElementById("todo-list");
 const filterInput = document.getElementById("filter");
+const deleteAllBtn = document.getElementById("delete-all");
 
 // ambil data dari localStorage
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -49,7 +49,7 @@ todoForm.addEventListener("submit", function(e) {
     }
 
     // push ke array tasks
-    tasks.push({ task, date });
+    tasks.push({ task, date, done: false });
     saveTasks();
     renderTasks();
 
@@ -59,7 +59,7 @@ todoForm.addEventListener("submit", function(e) {
 });
 
 // hapus task
-todoList.addEventListener("click", function (e) {
+todoBody.addEventListener("click", function (e) {
     const index = e.target.getAttribute("data-index");
     if (e.target.classList.contains("status-btn")) {
         tasks[index].done = !tasks[index].done;
@@ -77,10 +77,19 @@ todoList.addEventListener("click", function (e) {
 // filter task
 filterInput.addEventListener("keyup", function (e) {
     const text = e.target.value.toLowerCase();
-    document.querySelectorAll("#todo-list li").forEach(function(item) {
-        const content = item.textContent.toLowerCase();
-        item.style.display = content.includes(text) ? "flex" : "none";
+    Array.from(todoBody.getElementsByTagName("tr")).forEach(function(row) {
+        const content = row.textContent.toLowerCase();
+        row.style.display = content.includes(text) ? "" : "none";
    }); 
+});
+
+// delete all tasks
+deleteAllBtn.addEventListener("click", function () {
+    if (confirm("Are you sure you want to delete all tasks?")) {
+        tasks = [];
+        saveTasks();
+        renderTasks();
+    }
 });
 
 // render pertama kali saat halaman dibuka

@@ -29,6 +29,21 @@ form input, form button {
     padding: 8px;
 }
 
+#delete-all {
+  margin-left: 10px;
+  background: crimson;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#delete-all:hover {
+  background: darkred;
+}
+
+
 table {
   width: 100%;
   border-collapse: collapse;
