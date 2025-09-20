@@ -4,6 +4,27 @@ const dateInput = document.getElementById("date-input");
 const todoList = document.getElementById("todo-list");
 const filterInput = document.getElementById("filter");
 
+// ambil data dari localStorage
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+// fungsi render list
+function renderTasks() {
+    todoList.innerHTML = "";
+    tasks.forEach((taskObj, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+        <span>${taskObj.task} - ${taskObj.date}</span>
+        <button class="delete" data-index="${index}">X</button>
+        `;
+        todoList.appendChild(li);
+    });
+}
+
+// simpan ke localStorage
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
 // submit form
 todoForm.addEventListener("submit", function(e) {
     e.preventDefault();
@@ -15,12 +36,10 @@ todoForm.addEventListener("submit", function(e) {
         return;
     }
 
-    // buat li baru
-    const li = document.createElement("li");
-    li.innerHTML = `
-    <span>${task} - ${date}</span>
-    <button class="delete">X</button>
-    `;
+    // push ke array tasks
+    tasks.push({ task, date });
+    saveTasks();
+    renderTasks();
 
     todoList.appendChild(li);
 
@@ -32,7 +51,10 @@ todoForm.addEventListener("submit", function(e) {
 // hapus task
 todoList.addEventListener("click", function (e) {
     if(e.target.classList.contains("delete")) {
-        e.target.parentElement.remove();
+        const index = e.target.getAttribute("data-index");
+        tasks.splice(index, 1);
+        saveTasks();
+        renderTasks();
     }
 });
 
@@ -44,3 +66,6 @@ filterInput.addEventListener("keyup", function (e) {
         item.style.display = content.includes(text) ? "flex" : "none";
    }); 
 });
+
+// render pertama kali saat halaman dibuka
+renderTasks();
