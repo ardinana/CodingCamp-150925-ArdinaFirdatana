@@ -1,3 +1,4 @@
+const todoBody = document.getElementById("todo-body");
 const todoForm = document.getElementById("todo-form");
 const todoInput = document.getElementById("todo-input");
 const dateInput = document.getElementById("date-input");
@@ -9,14 +10,25 @@ let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 // fungsi render list
 function renderTasks() {
-    todoList.innerHTML = "";
+    todoBody.innerHTML = "";
     tasks.forEach((taskObj, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-        <span>${taskObj.task} - ${taskObj.date}</span>
-        <button class="delete" data-index="${index}">X</button>
-        `;
-        todoList.appendChild(li);
+        const tr = document.createElement("tr");
+    tr.innerHTML = `
+        <td>${taskObj.task}</td>
+        <td>${taskObj.date}</td>
+        <td>
+            <button class="status-btn" data-index="${index}">
+            ${taskObj.done ? "Done" : "Pending"}
+            </button>
+        </td>
+        <td>
+            <button class="delete" data-index="${index}">Delete</button>
+        </td>
+    `;
+    if (taskObj.done) {
+        tr.querySelector("td:first-child").classList.add("status-done");
+    }
+    todoBody.appendChild(tr);
     });
 }
 
@@ -28,11 +40,11 @@ function saveTasks() {
 // submit form
 todoForm.addEventListener("submit", function(e) {
     e.preventDefault();
-    const task = todoInput.ariaValueMax.trim();
+    const task = todoInput.value.trim();   // diperbaiki
     const date = dateInput.value;
 
     if(task === "" || date === "") {
-        alert("Please fill out both fileds!");
+        alert("Please fill out both fields!");
         return;
     }
 
@@ -41,8 +53,6 @@ todoForm.addEventListener("submit", function(e) {
     saveTasks();
     renderTasks();
 
-    todoList.appendChild(li);
-
     // reset input
     todoInput.value = "";
     dateInput.value = "";
@@ -50,6 +60,12 @@ todoForm.addEventListener("submit", function(e) {
 
 // hapus task
 todoList.addEventListener("click", function (e) {
+    const index = e.target.getAttribute("data-index");
+    if (e.target.classList.contains("status-btn")) {
+        tasks[index].done = !tasks[index].done;
+        saveTasks();
+        renderTasks();
+    }
     if(e.target.classList.contains("delete")) {
         const index = e.target.getAttribute("data-index");
         tasks.splice(index, 1);
